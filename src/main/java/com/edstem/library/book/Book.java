@@ -9,8 +9,13 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 import java.time.Instant;
 import java.util.Objects;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "book")
 public class Book {
 
@@ -39,8 +44,6 @@ public class Book {
     @Version
     private long version;
 
-    protected Book() {}
-
     public Book(String title, String author, String isbn, Integer publishedYear) {
         this.title = title;
         this.author = author;
@@ -67,34 +70,6 @@ public class Book {
     public void markReturned() {
         this.borrowedBy = null;
         this.borrowedAt = null;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public String getIsbn() {
-        return isbn;
-    }
-
-    public Integer getPublishedYear() {
-        return publishedYear;
-    }
-
-    public String getBorrowedBy() {
-        return borrowedBy;
-    }
-
-    public Instant getBorrowedAt() {
-        return borrowedAt;
     }
 
     @Override

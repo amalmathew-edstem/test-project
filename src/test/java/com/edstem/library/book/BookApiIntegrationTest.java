@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,6 +31,7 @@ import org.testcontainers.postgresql.PostgreSQLContainer;
 @SpringBootTest
 @Testcontainers
 @TestConstructor(autowireMode = AutowireMode.ALL)
+@RequiredArgsConstructor
 class BookApiIntegrationTest {
 
     private static final String LIBRARIAN_PASSWORD = UUID.randomUUID().toString();
@@ -53,11 +55,6 @@ class BookApiIntegrationTest {
     private final BookRepository bookRepository;
 
     private MockMvc mockMvc;
-
-    BookApiIntegrationTest(WebApplicationContext context, BookRepository bookRepository) {
-        this.context = context;
-        this.bookRepository = bookRepository;
-    }
 
     @BeforeEach
     void setUp() {

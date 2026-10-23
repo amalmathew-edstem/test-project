@@ -25,19 +25,16 @@ public class SecurityConfig {
     private static final String LIBRARIAN = "LIBRARIAN";
     private static final String MEMBER = "MEMBER";
 
-    private final HandlerExceptionResolver handlerExceptionResolver;
-
-    public SecurityConfig(@Qualifier("handlerExceptionResolver") HandlerExceptionResolver handlerExceptionResolver) {
-        this.handlerExceptionResolver = handlerExceptionResolver;
-    }
-
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http, @Qualifier("handlerExceptionResolver") HandlerExceptionResolver handlerExceptionResolver)
+            throws Exception {
+        AuthenticationEntryPoint authenticationEntryPoint = authenticationEntryPoint(handlerExceptionResolver);
         return http.csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .httpBasic(basic -> basic.authenticationEntryPoint(authenticationEntryPoint()))
-                .exceptionHandling(handling -> handling.authenticationEntryPoint(authenticationEntryPoint())
-                        .accessDeniedHandler(accessDeniedHandler()))
+                .httpBasic(basic -> basic.authenticationEntryPoint(authenticationEntryPoint))
+                .exceptionHandling(handling -> handling.authenticationEntryPoint(authenticationEntryPoint)
+                        .accessDeniedHandler(accessDeniedHandler(handlerExceptionResolver)))
                 .authorizeHttpRequests(
                         requests -> requests.requestMatchers(HttpMethod.GET, "/actuator/health", "/actuator/info")
                                 .permitAll()
@@ -77,14 +74,15 @@ public class SecurityConfig {
                 .build();
     }
 
-    private AuthenticationEntryPoint authenticationEntryPoint() {
+    private static AuthenticationEntryPoint authenticationEntryPoint(
+            HandlerExceptionResolver handlerExceptionResolver) {
         return (request, response, exception) -> {
             response.setHeader(HttpHeaders.WWW_AUTHENTICATE, "Basic realm=\"library\"");
             handlerExceptionResolver.resolveException(request, response, null, exception);
         };
     }
 
-    private AccessDeniedHandler accessDeniedHandler() {
+    private static AccessDeniedHandler accessDeniedHandler(HandlerExceptionResolver handlerExceptionResolver) {
         return (request, response, exception) ->
                 handlerExceptionResolver.resolveException(request, response, null, exception);
     }

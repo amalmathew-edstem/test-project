@@ -2,20 +2,17 @@ package com.edstem.library.book;
 
 import java.time.Clock;
 import java.time.Instant;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class BookService {
 
     private final BookRepository bookRepository;
     private final Clock clock;
-
-    public BookService(BookRepository bookRepository, Clock clock) {
-        this.bookRepository = bookRepository;
-        this.clock = clock;
-    }
 
     @Transactional
     public BookResponse create(BookRequest request) {
