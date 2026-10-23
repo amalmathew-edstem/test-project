@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: library
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/library}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  data:
+    web:
+      pageable:
+        max-page-size: 100
+
+library:
+  users:
+    librarian:
+      username: ${LIBRARIAN_USERNAME}
+      password: ${LIBRARIAN_PASSWORD}
+    member:
+      username: ${MEMBER_USERNAME}
+      password: ${MEMBER_PASSWORD}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
