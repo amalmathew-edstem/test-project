@@ -12,12 +12,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.context.TestConstructor;
+import org.springframework.test.context.TestConstructor.AutowireMode;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -28,6 +29,7 @@ import org.testcontainers.postgresql.PostgreSQLContainer;
 
 @SpringBootTest
 @Testcontainers
+@TestConstructor(autowireMode = AutowireMode.ALL)
 class BookApiIntegrationTest {
 
     private static final String LIBRARIAN_PASSWORD = UUID.randomUUID().toString();
@@ -47,13 +49,15 @@ class BookApiIntegrationTest {
         registry.add("library.users.member.password", () -> MEMBER_PASSWORD);
     }
 
-    @Autowired
-    private WebApplicationContext context;
-
-    @Autowired
-    private BookRepository bookRepository;
+    private final WebApplicationContext context;
+    private final BookRepository bookRepository;
 
     private MockMvc mockMvc;
+
+    BookApiIntegrationTest(WebApplicationContext context, BookRepository bookRepository) {
+        this.context = context;
+        this.bookRepository = bookRepository;
+    }
 
     @BeforeEach
     void setUp() {
