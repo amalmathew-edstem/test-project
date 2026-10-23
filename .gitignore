@@ -1,0 +1,8 @@
+# Claude Code harness — local only, never pushed
+.claude/
+CLAUDE.md
+.gitleaks.toml
+.github/CODEOWNERS
+.github/PULL_REQUEST_TEMPLATE.md
+.github/workflows/harness-check.yml
+.github/workflows/claude-pr-review.yml
